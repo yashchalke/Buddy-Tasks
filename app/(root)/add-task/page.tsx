@@ -1,5 +1,6 @@
 "use client";
 import React, { FormEvent, useState, useEffect } from "react";
+import toast from "react-hot-toast";
 type Task = {
   id: number;
   task: string;
@@ -22,6 +23,7 @@ const page = () => {
   const deleteTask = async (id: number) => {
     await fetch(`/api/tasks/${id}`, { method: "DELETE" });
     settasks((prev) => prev.filter((t) => t.id !== id));
+    toast.success("Deleted Successfully")
   };
 
   const handleUpdate = async () => {
@@ -36,6 +38,8 @@ const page = () => {
     const updated = await res.json();
 
     settasks((prev) => prev.map((t) => (t.id === updated.id ? updated : t)));
+
+    toast.success("Updated Successfully")
 
     settask("");
     setIsEditing(false);
@@ -64,11 +68,11 @@ const page = () => {
     });
 
     if (!res.ok) {
-      alert("Failed to Add Task");
+      toast.error("Failed to Add Task");
       return;
     }
 
-    alert("Task Added Successfully!!");
+    toast.success("Task Added Successfully!!");
     settask("");
     fetchTasks();
   };
