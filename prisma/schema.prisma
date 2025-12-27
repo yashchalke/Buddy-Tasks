@@ -25,6 +25,7 @@ model Task {
   id Int @id @default(autoincrement())
   task String
   isComplete Boolean @default(false)
+  createdAt DateTime @default(now())
 
   userId Int
   user User @relation(fields: [userId],references: [id])

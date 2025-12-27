@@ -13,6 +13,8 @@ const page = () => {
   const [tasks, settasks] = useState<Task[]>([]);
   const [isEditing, setIsEditing] = useState(false);
   const [editId, setEditId] = useState<number | null>(null);
+  const [show, setShow] = useState<boolean>(false);
+  
 
   const handleEdit = (id: number, text: string) => {
     setIsEditing(true);
@@ -23,7 +25,7 @@ const page = () => {
   const deleteTask = async (id: number) => {
     await fetch(`/api/tasks/${id}`, { method: "DELETE" });
     settasks((prev) => prev.filter((t) => t.id !== id));
-    toast.success("Deleted Successfully")
+    toast.success("Deleted Successfully");
   };
 
   const handleUpdate = async () => {
@@ -39,7 +41,7 @@ const page = () => {
 
     settasks((prev) => prev.map((t) => (t.id === updated.id ? updated : t)));
 
-    toast.success("Updated Successfully")
+    toast.success("Updated Successfully");
 
     settask("");
     setIsEditing(false);
@@ -47,12 +49,10 @@ const page = () => {
   };
 
   const fetchTasks = async () => {
-    const res = await fetch("/api/get-tasks");
-    if (!res.ok) return;
-
-    const data: Task[] = await res.json();
-    settasks(data);
-  };
+  const res = await fetch("/api/tasks/today", { cache: "no-store" });
+  const data = await res.json();
+  settasks(Array.isArray(data) ? data : []);
+};
 
   useEffect(() => {
     fetchTasks();
@@ -115,37 +115,50 @@ const page = () => {
           </div>
         </form>
 
-        <div className=" mt-4 overflow-scroll h-60 scroll-smooth">
+        <div onMouseEnter={() => setShow(true)}
+      onMouseLeave={() => setShow(false)}
+      className={`h-[220px] border rounded overflow-y-auto transition-all mt-4 ${
+        show ? "scroll-show" : "scroll-hide"
+      }`}>
           <table className="w-full border-collapse table-fixed ">
             <thead className="sticky top-0 z-10 bg-blue-500">
               <tr className="text-left text-sm text-black border-b ">
                 <th className="p-3">Task</th>
-                <th
-                  className="p-3 w-24 text-center"
-                  
-                >
-                  Edit
-                </th>
+                <th className="p-3 w-24 text-center">Edit</th>
                 <th className="p-3 w-24 text-center">Delete</th>
               </tr>
             </thead>
 
             <tbody>
               {tasks.map((t) => (
-                <tr key={t.id} className="border-b hover:bg-gray-50">
-                  <td className="py-3 wrap-break-words">{t.task}</td>
+                <tr
+                  key={t.id}
+                  className={`border-b hover:bg-gray-50 ${
+                    t.isComplete
+                      ? "bg-green-300"
+                      : "bg-red-300 hover:bg-red-200"
+                  }`}
+                >
+                  <td className="p-3 wrap-break-words">{t.task}</td>
                   <td className="text-center">
-                    <button className="text-red-500 hover:underline" onClick={() => handleEdit(t.id, t.task)}>
-                      Edit
-                    </button>
+                    {!t.isComplete && (
+                      <button
+                        className="text-blue-500 hover:underline"
+                        onClick={() => handleEdit(t.id, t.task)}
+                      >
+                        Edit
+                      </button>
+                    )}
                   </td>
                   <td className="text-center">
-                    <button
-                      className="text-red-500 hover:underline"
-                      onClick={() => deleteTask(t.id)}
-                    >
-                      Delete
-                    </button>
+                    {!t.isComplete && (
+                      <button
+                        className="text-red-500 hover:underline"
+                        onClick={() => deleteTask(t.id)}
+                      >
+                        Delete
+                      </button>
+                    )}
                   </td>
                 </tr>
               ))}

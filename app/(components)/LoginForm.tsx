@@ -69,11 +69,12 @@ const LoginForm = () => {
             alt="Shypbuddy-logo"
             width={384}
             height={84}
-            className="w-20"
+            className="w-10"
           ></Image>
-          <h1 className="font-semibold text-3xl">Buddy Tasks</h1>
-          <h1 className="text-xl font-semibold mt-5">Login</h1>
-        </div>
+          <h1 className="text-xl mt-4">Buddy Tasks</h1>
+          </div>
+          <h1 className="text-xl text-left mt-5">Login</h1>
+        
         <div className="mt-2 flex flex-col gap-y-8">
           <div className="w-full">
             <input

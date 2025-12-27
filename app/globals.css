@@ -25,11 +25,31 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-.hide-scrollbar::-webkit-scrollbar {
-  display: none;
+.scroll-hide::-webkit-scrollbar {
+  width: 0px;
+  height: 0px;
 }
 
-.hide-scrollbar {
-  -ms-overflow-style: none;  
+.scroll-show::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.scroll-show::-webkit-scrollbar-thumb {
+  background: rgba(100, 100, 100, 0.6);
+  border-radius: 10px;
+}
+
+.scroll-show::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Firefox */
+.scroll-hide {
   scrollbar-width: none;
 }
+
+.scroll-show {
+  scrollbar-width: thin;
+}
+
